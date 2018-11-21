@@ -1,0 +1,12 @@
+addi $s5, $zero, 1
+addi $s6, $zero, 2
+addi $sp, $sp, -36
+sw $s5, 0($sp)
+sw $s5, 8($sp)
+sw $s5, 16($sp)
+sw $s5, 24($sp)
+sw $s5, 32($sp)
+sw $s6, 12($sp)
+sw $s6, 4($sp)
+sw $s6, 20($sp)
+sw $s6, 28($sp)
