@@ -113,6 +113,7 @@ int validarSw(char* rt, Registro* registros)
 Jugada* crearJugada(int pos, Registro jugador, char* instruc)
 {
 	Jugada* nodito = (Jugada*)malloc(sizeof(Jugada));
+	printf("%s %d\n", jugador.nombre, jugador.valor );
 	if (nodito != NULL)
 	{
 		nodito->jugador = jugador;
@@ -147,7 +148,7 @@ Jugada* insertarJugada(Jugada* lista, int pos, Registro jugador, char* instruc)
 	{
 		return nueva;
 	}
-	return aux;
+	return lista;
 }
 
 
@@ -155,7 +156,6 @@ void mostrarLista(Jugada* lista)
 {
 	Jugada* indice = lista;
 	printf("LISTA ENLAZADA:\n");
-
 	while (indice != NULL){
 		printf("Jugador:%s %d, pos:%d, ins:%d\n", indice->jugador.nombre, indice->jugador.valor, indice->posicion, indice->instruccion);
 		indice = indice->sgte;
