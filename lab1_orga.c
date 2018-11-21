@@ -4,8 +4,22 @@
 /*VARIABLES GLOBALES*/
 Registro Jugador1;
 Registro Jugador2;
+Registro Tablero[9];
+int IF;
+int ID;
+int EXE;
+int MEM;
+int WB;
 
 
+void inciarEtapas()
+{
+	IF = 0;
+	ID = 0;
+	EXE = 0;
+	MEM = 0;
+	WB = 0;
+}
 
 void iniciarRegistros(Registro* registros)
 {
@@ -234,11 +248,11 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 		    	{	
 		    		if (strcmp(rd, Jugador1.nombre) == 0)
 		    		{
-			    		lista = insertarJugada(lista, pos, Jugador1, instruc);	
+			    		lista = insertarJugada(lista, pos/4, Jugador1, instruc);	
 		    		}
 		    		else if (strcmp(rd, Jugador2.nombre) == 0)
 		    		{
-			    		lista = insertarJugada(lista, pos, Jugador2, instruc);	
+			    		lista = insertarJugada(lista, pos/4, Jugador2, instruc);	
 		    		}
 		    	}
     		}
@@ -251,11 +265,11 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 		    	fscanf(archivo, "%s", rt);
 		    	if (strcmp(rd, Jugador1.nombre) == 0)
 	    		{
-			    	lista = insertarJugada(lista, atoi(rt), Jugador1, instruc);
+			    	lista = insertarJugada(lista, atoi(rt)-1, Jugador1, instruc);
 	    		}
 	    		else if (strcmp(rd, Jugador2.nombre) == 0)
 	    		{
-			    	lista = insertarJugada(lista, atoi(rt), Jugador2, instruc);
+			    	lista = insertarJugada(lista, atoi(rt)-1, Jugador2, instruc);
 	    		}
 	    		else if (strcmp(rd, "$sp") == 0)
 	    		{
@@ -274,18 +288,150 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 	return lista;
 }
 
+
+void iniciarTablero()
+{
+	for (int i = 0; i < 9; ++i)
+	{
+		strcpy(Tablero[i].nombre, "");
+		Tablero->valor = 0;
+	}
+}
+
+
+int comprobarTablero()
+{
+	for (int i = 0; i < 9; ++i)
+	{
+		if (strcmp(Tablero[i].nombre, "") == 0 && Tablero[i].valor == 0)
+			return INCOMPLETO; 
+	}
+	return COMPLETO;
+}
+
+Registro obtenerResultado()
+{
+	if (Tablero[0].valor == Jugador1.valor || Tablero[1].valor == Jugador1.valor || Tablero[2].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[0].valor == Jugador2.valor || Tablero[1].valor == Jugador2.valor || Tablero[2].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[0].valor == Jugador1.valor|| Tablero[3].valor == Jugador1.valor || Tablero[6].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[0].valor == Jugador2.valor || Tablero[3].valor == Jugador2.valor || Tablero[6].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[1].valor == Jugador1.valor || Tablero[4].valor == Jugador1.valor || Tablero[7].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[1].valor == Jugador2.valor || Tablero[4].valor == Jugador2.valor || Tablero[7].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[2].valor == Jugador1.valor || Tablero[5].valor == Jugador1.valor || Tablero[8].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[2].valor == Jugador2.valor || Tablero[5].valor == Jugador2.valor || Tablero[8].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[3].valor == Jugador1.valor || Tablero[4].valor == Jugador1.valor || Tablero[5].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[3].valor == Jugador2.valor || Tablero[4].valor == Jugador2.valor || Tablero[5].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[6].valor == Jugador1.valor || Tablero[7].valor == Jugador1.valor || Tablero[8].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[6].valor == Jugador2.valor || Tablero[7].valor == Jugador2.valor || Tablero[8].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[0].valor == Jugador1.valor || Tablero[4].valor == Jugador1.valor || Tablero[8].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[0].valor == Jugador2.valor || Tablero[4].valor == Jugador2.valor || Tablero[8].valor == Jugador2.valor)
+		return Jugador2;
+	else if (Tablero[2].valor == Jugador1.valor || Tablero[4].valor == Jugador1.valor || Tablero[6].valor == Jugador1.valor)
+		return Jugador1;
+	else if (Tablero[2].valor == Jugador2.valor || Tablero[4].valor == Jugador2.valor || Tablero[6].valor == Jugador2.valor)
+		return Jugador2;
+	else
+	{
+		Registro empate;
+		strcpy(empate.nombre, "empate");
+		empate.valor = 0;
+		return empate;
+	}
+}
+
+
+void mostrarTablero()
+{
+	printf("%d %d %d\n", Tablero[0].valor, Tablero[1].valor, Tablero[2].valor);
+	printf("%d %d %d\n", Tablero[3].valor, Tablero[4].valor, Tablero[5].valor);
+	printf("%d %d %d\n", Tablero[6].valor, Tablero[7].valor, Tablero[8].valor);
+}
+
+void realizarJugadas(Jugada* lista)
+{
+	int respuesta = INCOMPLETO;
+	int pos;
+	Registro resultado;
+	Jugada* aux = lista;
+	if (lista == NULL)
+	{
+		mostrarTablero();
+		printf("Tablero incompleto.\n");
+	}
+	while (aux != NULL)
+	{
+		respuesta = comprobarTablero();
+	//	printf("respuesta: %d, INCOMPLETO=%d\n", respuesta, INCOMPLETO);
+		if (respuesta == INCOMPLETO)
+		{
+			pos = aux->posicion;
+			if (strcmp(Tablero[pos].nombre, "") == 0)
+			{
+				Tablero[pos] = aux->jugador; 
+			}
+			else if (Tablero[pos].valor == aux->jugador.valor && aux->instruccion == 1)
+			{
+				strcpy(Tablero[pos].nombre, "");
+				Tablero[pos].valor = 0;
+			}
+		}
+		else	// tablero esta completo.
+		{
+			mostrarTablero();			
+			resultado = obtenerResultado();
+			if (strcmp(resultado.nombre, "empate") == 0)
+			{
+				printf("El resultado del juego es empate\n");
+			}
+			else
+				printf("El ganador del juego es: %s\n", resultado.nombre);
+			
+		}
+		aux = aux->sgte;
+	}
+	printf("Gato final:\n");
+	mostrarTablero();
+	resultado = obtenerResultado();
+	if (strcmp(resultado.nombre, "empate") == 0)
+	{
+		printf("El resultado del juego es empate\n");
+	}
+	else
+		printf("El ganador del juego es: %s\n", resultado.nombre);
+}
+
+
+
 int main(int argc, char const *argv[])
 {
 	Registro registros[TOTAL_REGISTRO];
 	iniciarRegistros(registros);
+	iniciarTablero();
+	inciarEtapas();
 	Jugada* lista = NULL;
 
-	lista = leerEntrada("Jugadas1.txt", registros, lista);
+	lista = leerEntrada("Jugadas3.txt", registros, lista);
 	mostrarLista(lista);
+
+	realizarJugadas(lista);
+
 
 //	printf("Jugador1:%s %d\n", Jugador1.nombre, Jugador1.valor);
 //	printf("Jugador2:%s %d\n", Jugador2.nombre, Jugador2.valor);
 
-	printf("Fin programa.\n");
+	printf("\nFin del programa.\n");
 	return 0;
 }

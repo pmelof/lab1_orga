@@ -11,6 +11,8 @@ Patricia Melo Fuenzalida.
 #include <ctype.h>
 
 /*DEFINICIONES*/
+#define INCOMPLETO -1
+#define COMPLETO 1
 #define TAM_PALABRA 32
 #define TAM_LINEA 1000
 #define TAM_REGISTRO 32
@@ -32,7 +34,7 @@ typedef struct Jugada
 {
 	Registro jugador;
 	int posicion;
-	int instruccion;	// 0 agrega jugada (addi), 1 quita jugada (subi).
+	int instruccion;	// 0 agrega jugada (addi o sw), 1 quita jugada (subi).
 	struct Jugada* sgte; 
 }Jugada;
 
@@ -46,3 +48,8 @@ Jugada* crearJugada(int pos, Registro jugador, char* instruc);
 Jugada* insertarJugada(Jugada* lista, int pos, Registro jugador, char* instruc);
 void mostrarLista(Jugada* lista);
 Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista);
+void iniciarTablero();
+int comprobarTablero();
+Registro obtenerResultado();
+void mostrarTablero();
+
