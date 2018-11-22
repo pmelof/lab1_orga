@@ -17,9 +17,6 @@ Patricia Melo Fuenzalida.
 #define TAM_LINEA 1000
 #define TAM_REGISTRO 32
 #define TOTAL_REGISTRO 32
-#define NO_HAY_ERROR -1
-#define MAX_LABEL 100
-#define TAM_MEMORIA 100
 
 
 /*ESTRUCTURAS*/

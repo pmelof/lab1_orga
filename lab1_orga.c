@@ -419,16 +419,20 @@ void realizarJugadas(Jugada* lista)
 		{
 			if (ganador == 0)
 			{
+				printf("entre al if\n");
 				resultado = obtenerResultado();
+				printf("resultado: %s\n", resultado.nombre);
 				if (strcmp(resultado.nombre, "empate") != 0)	//Existe algún ganador.
 				{
+					printf("Holaaa\n");
 					mostrarTablero();
 					if (strcmp(resultado.nombre, Jugador1.nombre) == 0)
 						printf("El ganador del juego es el jugador 1 (X)\n");
 					else
 						printf("El ganador del juego es el jugador 2 (O)\n");
+					ganador = 1;
 				}
-				ganador = 1;
+				
 			}
 			pos = aux->posicion;
 			if (strcmp(Tablero[pos].nombre, "") == 0)
@@ -453,8 +457,9 @@ void realizarJugadas(Jugada* lista)
 						printf("El ganador del juego es el jugador 1 (X)\n");
 					else
 						printf("El ganador del juego es el jugador 2 (O)\n");
-				}
 				ganador = 1;
+				}
+				
 			}
 		}
 		aux = aux->sgte;
@@ -467,10 +472,12 @@ void realizarJugadas(Jugada* lista)
 		printf("El resultado del juego es empate\n");
 	}
 	else
+	{
 		if (strcmp(resultado.nombre, Jugador1.nombre) == 0)
 			printf("El ganador del juego es el jugador 1 (X)\n");
 		else
 			printf("El ganador del juego es el jugador 2 (O)\n");
+	}
 }
 
 
@@ -488,7 +495,7 @@ int main(int argc, char const *argv[])
 	inciarEtapas();
 	Jugada* lista = NULL;
 
-	lista = leerEntrada("Jugadas4.txt", registros, lista);
+	lista = leerEntrada("Jugadas1.txt", registros, lista);
 	//mostrarLista(lista);
 
 	realizarJugadas(lista);
