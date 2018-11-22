@@ -127,7 +127,6 @@ int validarSw(char* rt, Registro* registros)
 Jugada* crearJugada(int pos, Registro jugador, char* instruc)
 {
 	Jugada* nodito = (Jugada*)malloc(sizeof(Jugada));
-	printf("%s %d\n", jugador.nombre, jugador.valor );
 	if (nodito != NULL)
 	{
 		nodito->jugador = jugador;
@@ -209,7 +208,10 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
     			strcpy(Jugador1.nombre, rd);
     			Jugador1.valor = registros[i].valor + atoi(rt);
     		}
-    		//sumar IF ID EXE ...
+    		IF++;
+    		ID++;
+    		EXE++;
+    		WB++;
     	}
 
     	//Jugador 2
@@ -228,14 +230,16 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
     			strcpy(Jugador2.nombre, rd);
     			Jugador2.valor = registros[i].valor + atoi(rt);
     		}
-    		//sumar IF ID EXE ...
+    		IF++;
+    		ID++;
+    		EXE++;
+    		WB++;
     	}
 
     	while (feof(archivo)==0)
     	{
     		strcpy(instruc, "");
 			fscanf(archivo, "%s", instruc);//obtengo una instruccion.
-    		printf("instruc: %s\n", instruc);
 
     		if (strcmp(instruc, "sw") == 0)
     		{
@@ -255,6 +259,10 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 			    		lista = insertarJugada(lista, pos/4, Jugador2, instruc);	
 		    		}
 		    	}
+		    	IF++;
+		    	ID++;
+		    	EXE++;
+		    	MEM++;
     		}
     		else if (strcmp(instruc, "addi") == 0 || strcmp(instruc, "subi") == 0)
     		{
@@ -275,8 +283,27 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 	    		{
 	    			//genero tablero.
 	    		}
+	    		IF++;
+	    		ID++;
+	    		EXE++;
+	    		WB++;
     		}
-			
+			else if (strcmp(instruc, "add") == 0 || strcmp(instruc, "sub") == 0 
+				|| strcmp(instruc, "mul") == 0 || strcmp(instruc, "div") == 0)
+			{
+				IF++;
+	    		ID++;
+	    		EXE++;
+	    		WB++;
+			}
+			else if (strcmp(instruc, "lw") == 0)
+			{
+				IF++;
+	    		ID++;
+	    		EXE++;
+	    		MEM++;
+	    		WB++;
+			}
 	    	else
 	    		printf("ERROR\n");
 
@@ -377,6 +404,13 @@ void realizarJugadas(Jugada* lista)
 	//	printf("respuesta: %d, INCOMPLETO=%d\n", respuesta, INCOMPLETO);
 		if (respuesta == INCOMPLETO)
 		{
+			/*resultado = obtenerResultado();
+			if (strcmp(resultado.nombre, "empate") != 0)	//Existe algún ganador.
+			{
+				printf("resultado ganador: %s %d\n", resultado.nombre, resultado.valor);
+				mostrarTablero();
+				printf("El ganador del juego es: %s\n", resultado.nombre);
+			}*/
 			pos = aux->posicion;
 			if (strcmp(Tablero[pos].nombre, "") == 0)
 			{
@@ -414,6 +448,11 @@ void realizarJugadas(Jugada* lista)
 }
 
 
+void mostrarEtapas()
+{
+	printf("IF: %d\nID: %d\nEXE: %d\nMEM: %d\nWB: %d\n", IF, IF, EXE, MEM, WB);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -424,13 +463,11 @@ int main(int argc, char const *argv[])
 	Jugada* lista = NULL;
 
 	lista = leerEntrada("Jugadas3.txt", registros, lista);
-	mostrarLista(lista);
+	//mostrarLista(lista);
 
 	realizarJugadas(lista);
 
-
-//	printf("Jugador1:%s %d\n", Jugador1.nombre, Jugador1.valor);
-//	printf("Jugador2:%s %d\n", Jugador2.nombre, Jugador2.valor);
+	mostrarEtapas();
 
 	printf("\nFin del programa.\n");
 	return 0;
