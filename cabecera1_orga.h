@@ -42,7 +42,7 @@ Inicio todas las etapas con valor 0.
 Entrada: Nada. 
 Salida: Void.
 */
-void inciarEtapas():
+void inciarEtapas();
 
 
 /*
