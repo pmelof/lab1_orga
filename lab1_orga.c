@@ -21,6 +21,16 @@ void inciarEtapas()
 	WB = 0;
 }
 
+
+void quitarSaltoLinea(char *frase)
+{
+  char *ptr;
+  ptr = strchr (frase, '\n');
+  if (ptr)
+    *ptr = '\0';
+}
+
+
 void iniciarRegistros(Registro* registros)
 {
 	int i=0;
@@ -279,10 +289,6 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 	    		{
 			    	lista = insertarJugada(lista, atoi(rt)-1, Jugador2, instruc);
 	    		}
-	    		else if (strcmp(rd, "$sp") == 0)
-	    		{
-	    			//genero tablero.
-	    		}
 	    		IF++;
 	    		ID++;
 	    		EXE++;
@@ -304,9 +310,6 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 	    		MEM++;
 	    		WB++;
 			}
-	    	else
-	    		printf("ERROR\n");
-
 		}
     }
 	else
@@ -380,56 +383,52 @@ Registro obtenerResultado()
 }
 
 
-void mostrarTablero()
+void mostrarTablero(FILE* archivo)
 {
 	for (int i = 0; i < 9; ++i)
 	{
 		if (Tablero[i].valor == Jugador1.valor)
-			printf("%c ", 'X');
+			fprintf(archivo, "%c ", 'X');
 		else if (Tablero[i].valor == Jugador2.valor)
-			printf("%c ", 'O');
+			fprintf(archivo, "%c ", 'O');
 		else
-			printf("- ");
+			fprintf(archivo, "- ");
 		if((i+1)%3 == 0)	
-			printf("\n");
+			fprintf(archivo, "\n");
 		
 	}
-//	printf("%d %d %d\n", Tablero[0].valor, Tablero[1].valor, Tablero[2].valor);
-//	printf("%d %d %d\n", Tablero[3].valor, Tablero[4].valor, Tablero[5].valor);
-//	printf("%d %d %d\n", Tablero[6].valor, Tablero[7].valor, Tablero[8].valor);
 }
 
-void realizarJugadas(Jugada* lista)
+void realizarJugadas(Jugada* lista, char* salida1)
 {
 	int respuesta = INCOMPLETO;
 	int pos;
 	int ganador = 0;
 	Registro resultado;
 	Jugada* aux = lista;
+	FILE* archivo = NULL;
+	archivo = fopen(salida1, "w");
+
 	if (lista == NULL)
 	{
-		mostrarTablero();
+		mostrarTablero(archivo);
 		printf("Tablero incompleto.\n");
 	}
 	while (aux != NULL)
 	{
 		respuesta = comprobarTablero();
-	//	printf("respuesta: %d, INCOMPLETO=%d\n", respuesta, INCOMPLETO);
 		if (respuesta == INCOMPLETO)
 		{
 			if (ganador == 0)
 			{
-				printf("entre al if\n");
 				resultado = obtenerResultado();
-				printf("resultado: %s\n", resultado.nombre);
 				if (strcmp(resultado.nombre, "empate") != 0)	//Existe algún ganador.
 				{
-					printf("Holaaa\n");
-					mostrarTablero();
+					mostrarTablero(archivo);
 					if (strcmp(resultado.nombre, Jugador1.nombre) == 0)
-						printf("El ganador del juego es el jugador 1 (X)\n");
+						fprintf(archivo, "El ganador del juego es el jugador %s (X)\n", Jugador1.nombre);
 					else
-						printf("El ganador del juego es el jugador 2 (O)\n");
+						fprintf(archivo, "El ganador del juego es el jugador %s (O)\n", Jugador2.nombre);
 					ganador = 1;
 				}
 				
@@ -452,11 +451,11 @@ void realizarJugadas(Jugada* lista)
 				resultado = obtenerResultado();
 				if (strcmp(resultado.nombre, "empate") != 0)	//Existe algún ganador.
 				{
-					mostrarTablero();
+					mostrarTablero(archivo);
 					if (strcmp(resultado.nombre, Jugador1.nombre) == 0)
-						printf("El ganador del juego es el jugador 1 (X)\n");
+						fprintf(archivo, "El ganador del juego es el jugador %s (X)\n", Jugador1.nombre);
 					else
-						printf("El ganador del juego es el jugador 2 (O)\n");
+						fprintf(archivo, "El ganador del juego es el jugador %s (O)\n", Jugador2.nombre);
 				ganador = 1;
 				}
 				
@@ -464,43 +463,85 @@ void realizarJugadas(Jugada* lista)
 		}
 		aux = aux->sgte;
 	}
-	printf("Gato final:\n");
-	mostrarTablero();
-	resultado = obtenerResultado();
-	if (strcmp(resultado.nombre, "empate") == 0)
+	fprintf(archivo, "Gato final:\n");
+	mostrarTablero(archivo);
+	respuesta = comprobarTablero();
+	if (respuesta == COMPLETO)
 	{
-		printf("El resultado del juego es empate\n");
+		if (strcmp(resultado.nombre, "empate") == 0)
+		{
+			fprintf(archivo, "El resultado del juego es empate\n");
+		}
 	}
-	else
+	else if (ganador == 0)
 	{
-		if (strcmp(resultado.nombre, Jugador1.nombre) == 0)
-			printf("El ganador del juego es el jugador 1 (X)\n");
-		else
-			printf("El ganador del juego es el jugador 2 (O)\n");
+		resultado = obtenerResultado();
+		if (strcmp(resultado.nombre, "empate") != 0)	//Existe algún ganador.
+		{
+			if (strcmp(resultado.nombre, Jugador1.nombre) == 0)
+				fprintf(archivo, "El ganador del juego es el jugador %s (X)\n", Jugador1.nombre);
+			else
+				fprintf(archivo, "El ganador del juego es el jugador %s (O)\n", Jugador2.nombre);
+		ganador = 1;
+		}
 	}
+	else if (respuesta == INCOMPLETO)
+	{
+		resultado = obtenerResultado();
+		if (strcmp(resultado.nombre, "empate") == 0)	//Existe algún ganador.
+		{
+			fprintf(archivo, "Tablero incompleto.\n");
+		}
+	}
+	
+	fclose(archivo);
 }
 
 
-void mostrarEtapas()
+void mostrarEtapas(FILE* archivo)
 {
-	printf("IF: %d\nID: %d\nEXE: %d\nMEM: %d\nWB: %d\n", IF, IF, EXE, MEM, WB);
+	fprintf(archivo, "IF: %d\nID: %d\nEXE: %d\nMEM: %d\nWB: %d\n", IF, IF, EXE, MEM, WB);
 }
 
 
 int main(int argc, char const *argv[])
 {
+	printf("\n.......................................\n");
+    printf(".                                     .\n");
+    printf(".            Laboratorio 2            .\n");
+    printf(".                                     .\n");
+    printf(".......................................\n");
+    printf(".     Organización de Computadores    .\n");
+    printf(".                                     .\n");
+    printf(".       Patricia Melo Fuenzalida      .\n");
+    printf(".......................................\n");
+
 	Registro registros[TOTAL_REGISTRO];
 	iniciarRegistros(registros);
 	iniciarTablero();
 	inciarEtapas();
 	Jugada* lista = NULL;
+	char entrada[TAM_PALABRA];
+	char salida[TAM_PALABRA];
+	char salida2[TAM_PALABRA];
+	FILE* archivo = NULL;
 
-	lista = leerEntrada("Jugadas1.txt", registros, lista);
-	//mostrarLista(lista);
+	printf("Ingrese nombre del archivo de entrada (ejemplo: Jugadas1.txt):\n");
+	fgets(entrada, TAM_PALABRA, stdin);
+	quitarSaltoLinea(entrada);
+	printf("Ingrese nombre del archivo de salida para guardar el resultado:\n");
+	fgets(salida, TAM_PALABRA, stdin);
+	quitarSaltoLinea(salida);
+	printf("Ingrese nombre del archivo de salida para guardar las etapas del pipeline:\n");
+	fgets(salida2, TAM_PALABRA, stdin);
+	quitarSaltoLinea(salida2);
 
-	realizarJugadas(lista);
+	lista = leerEntrada(entrada, registros, lista);
+	realizarJugadas(lista, salida);
 
-	mostrarEtapas();
+	archivo = fopen(salida2, "w");
+	mostrarEtapas(archivo);
+	fclose(archivo);
 
 	printf("\nFin del programa.\n");
 	return 0;
