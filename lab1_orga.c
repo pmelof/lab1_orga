@@ -297,6 +297,9 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 			else if (strcmp(instruc, "add") == 0 || strcmp(instruc, "sub") == 0 
 				|| strcmp(instruc, "mul") == 0 || strcmp(instruc, "div") == 0)
 			{
+				fscanf(archivo, "%s", rd);
+				fscanf(archivo, "%s", rs);
+				fscanf(archivo, "%s", rt);
 				IF++;
 	    		ID++;
 	    		EXE++;
@@ -304,6 +307,8 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 			}
 			else if (strcmp(instruc, "lw") == 0)
 			{
+				fscanf(archivo, "%s", rd);
+				fscanf(archivo, "%s", rt);
 				IF++;
 	    		ID++;
 	    		EXE++;
@@ -321,7 +326,8 @@ Jugada* leerEntrada(char* nombre, Registro* registros, Jugada* lista)
 
 void iniciarTablero()
 {
-	for (int i = 0; i < 9; ++i)
+	int i;
+	for (i = 0; i < 9; ++i)
 	{
 		strcpy(Tablero[i].nombre, "");
 		Tablero->valor = 0;
@@ -331,7 +337,8 @@ void iniciarTablero()
 
 int comprobarTablero()
 {
-	for (int i = 0; i < 9; ++i)
+	int i;
+	for (i = 0; i < 9; ++i)
 	{
 		if (strcmp(Tablero[i].nombre, "") == 0 && Tablero[i].valor == 0)
 			return INCOMPLETO; 
@@ -385,7 +392,8 @@ Registro obtenerResultado()
 
 void mostrarTablero(FILE* archivo)
 {
-	for (int i = 0; i < 9; ++i)
+	int i;
+	for (i = 0; i < 9; ++i)
 	{
 		if (Tablero[i].valor == Jugador1.valor)
 			fprintf(archivo, "%c ", 'X');
@@ -468,9 +476,20 @@ void realizarJugadas(Jugada* lista, char* salida1)
 	respuesta = comprobarTablero();
 	if (respuesta == COMPLETO)
 	{
-		if (strcmp(resultado.nombre, "empate") == 0)
+		if (ganador == 0)
 		{
-			fprintf(archivo, "El resultado del juego es empate\n");
+			if (strcmp(resultado.nombre, "empate") == 0)
+			{
+				fprintf(archivo, "El resultado del juego es empate\n");
+			}
+		}	
+	}
+	else if (respuesta == INCOMPLETO && ganador == 0)
+	{
+		resultado = obtenerResultado();
+		if (strcmp(resultado.nombre, "empate") == 0)	//No existe algún ganador.
+		{
+			fprintf(archivo, "Tablero incompleto.\n");
 		}
 	}
 	else if (ganador == 0)
@@ -484,15 +503,7 @@ void realizarJugadas(Jugada* lista, char* salida1)
 				fprintf(archivo, "El ganador del juego es el jugador %s (O)\n", Jugador2.nombre);
 		ganador = 1;
 		}
-	}
-	else if (respuesta == INCOMPLETO)
-	{
-		resultado = obtenerResultado();
-		if (strcmp(resultado.nombre, "empate") == 0)	//Existe algún ganador.
-		{
-			fprintf(archivo, "Tablero incompleto.\n");
-		}
-	}
+	}	
 	
 	fclose(archivo);
 }
@@ -509,7 +520,7 @@ int main(int argc, char const *argv[])
 	printf("\n.......................................\n");
     printf(".                                     .\n");
     printf(".            Laboratorio 2            .\n");
-    printf(".                                     .\n");
+    printf(".              TicTacToe              .\n");
     printf(".......................................\n");
     printf(".     Organización de Computadores    .\n");
     printf(".                                     .\n");

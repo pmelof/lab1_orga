@@ -157,4 +157,3 @@ Entrada: Archivo de salida 2.
 Salida: Void.
 */
 void mostrarEtapas(FILE* archivo);
-
